@@ -64,15 +64,32 @@ cron.schedule("0 * * * *", () => {
 })
 
 
+console.log("Mounting /api/users")
 app.use('/api/users', userRoute)
+
+console.log("Mounting /api/auth")
 app.use('/api/auth', authRoute)
+
+console.log("Mounting /api/admin")
 app.use('/api/admin', adminRoute)
+
+console.log("Mounting /api/songs")
 app.use('/api/songs', songRoute)
+
+console.log("Mounting /api/albums")
 app.use('/api/albums', albumRoute)
+
+console.log("Mounting /api/stats")
 app.use('/api/stats', statRoute)
 
+console.log("Mounting frontend fallback")
+
+
 if (process.env.NODE_ENV === 'production') {
+  console.log("Serving static files from frontend/dist")
   app.use(express.static(path.join(__dirname, '../frontend/dist')))
+
+  console.log("Registering fallback route (*)")
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"))
   })

@@ -7,7 +7,7 @@ config()
 
 const seedDatabase = async() => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI)
+        await mongoose.connect('mongodb+srv://l2565312:XIExhIrNLzlFFdH0@cluster0.mbook3o.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
         await Album.deleteMany({})
         await Song.deleteMany({})

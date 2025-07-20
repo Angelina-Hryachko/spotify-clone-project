@@ -64,32 +64,34 @@ cron.schedule("0 * * * *", () => {
 })
 
 
-console.log("Mounting /api/users")
+
 app.use('/api/users', userRoute)
-
-console.log("Mounting /api/auth")
 app.use('/api/auth', authRoute)
-
-console.log("Mounting /api/admin")
 app.use('/api/admin', adminRoute)
-
-console.log("Mounting /api/songs")
 app.use('/api/songs', songRoute)
-
-console.log("Mounting /api/albums")
 app.use('/api/albums', albumRoute)
-
-console.log("Mounting /api/stats")
 app.use('/api/stats', statRoute)
 
-console.log("Mounting frontend fallback")
 
+if (process.env.NODE_ENV === 'production') {
+  const frontendDir = path.join(__dirname, '../frontend', 'dist')
+  const indexPath = path.join(frontendDir, 'index.html')
 
-if (process.env.NODE_ENV === "production") {
-	app.use(express.static(path.join(__dirname, "../frontend/dist")));
-	// app.get("*", (req, res) => {
-	// 	res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
-	// })
+  console.log("Serving static files from", frontendDir)
+
+  app.use(express.static(frontendDir))
+
+  app.get('*', (req, res) => {
+    console.log(`Fallback route hit: ${req.originalUrl}`)
+
+    fs.access(indexPath, fs.constants.F_OK, (err) => {
+      if (err) {
+        console.error("❌ index.html not found at", indexPath)
+        return res.status(404).send("index.html not found")
+      }
+      res.sendFile(indexPath)
+    })
+  })
 }
 
 app.use((err, req, res, next) => {

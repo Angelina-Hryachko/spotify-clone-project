@@ -73,25 +73,11 @@ app.use('/api/albums', albumRoute)
 app.use('/api/stats', statRoute)
 
 
-if (process.env.NODE_ENV === 'production') {
-  const frontendDir = path.join(__dirname, '../frontend', 'dist')
-  const indexPath = path.join(frontendDir, 'index.html')
-
-  console.log("Serving static files from", frontendDir)
-
-  app.use(express.static(frontendDir))
-
-  app.get('*', (req, res) => {
-    console.log(`Fallback route hit: ${req.originalUrl}`)
-
-    fs.access(indexPath, fs.constants.F_OK, (err) => {
-      if (err) {
-        console.error("❌ index.html not found at", indexPath)
-        return res.status(404).send("index.html not found")
-      }
-      res.sendFile(indexPath)
-    })
-  })
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "../frontend/dist")));
+	// app.get("*", (req, res) => {
+	// 	res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
+	// })
 }
 
 app.use((err, req, res, next) => {

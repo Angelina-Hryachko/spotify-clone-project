@@ -85,14 +85,11 @@ app.use('/api/stats', statRoute)
 console.log("Mounting frontend fallback")
 
 
-if (process.env.NODE_ENV === 'production') {
-  console.log("Serving static files from frontend/dist")
-  app.use(express.static(path.join(__dirname, '../frontend/dist')))
-
-  console.log("Registering fallback route (*)")
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"))
-  })
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "../frontend/dist")));
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
+	});
 }
 
 app.use((err, req, res, next) => {
